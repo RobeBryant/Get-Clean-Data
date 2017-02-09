@@ -1,0 +1,198 @@
+1) Data Set Characteristics  
+Multivariate, Time-Series
+Number of Attributes: 561
+Number of Instances: 10299
+
+2) Data Download and Storage
+The data has been downloaded and extracted from the "FUCI HAR Dataset.zip" file to R working directory. The structure and content of the directory is:
+
+\test
+	\\Inertial Signals
+     		body_acc_x_test.txt
+		body_acc_y_test.txt
+		body_acc_z_test.txt
+		body_gyro_x_test.txt
+		body_gyro_y_test.txt
+		body_gyro_z_test.txt
+		total_acc_x_test.txt
+		total_acc_y_test.txt
+		total_acc_z_test.txt
+  	subject_test.txt
+  	X_test.txt
+  	y_test.txt
+\train
+  	\\Inertial Signals
+		body_acc_x_test.txt
+		body_acc_y_test.txt
+		body_acc_z_test.txt
+		body_gyro_x_test.txt
+		body_gyro_y_test.txt
+		body_gyro_z_test.txt
+		total_acc_x_test.txt
+		total_acc_y_test.txt
+		total_acc_z_test.txt
+  	subject_train.txt
+  	X_test.txt
+  	y_test.txt
+activity_labels.txt
+features.txt
+features_info.txt
+README.txt
+
+3) Description of the input data:
+
+- Individual Labels: Each row identifies the subject who performed the activity (9 subjects for test, 21 for train)
+file: subject_train.txt (7352 rows) / subject_test.txt (2947 rows)
+
+- Activities Description: each record identifies a code and the corresponding activity (like walking, sitting, etc.) performed by a subject during the study
+file: activity_labels.txt (6 records)
+
+- Activity labels: Each row identifies the activity code related to that set of data
+file: y_train.txt (7352 records) / y_test.txt (2947 records)
+
+- Feature vector: 2 files contain the Information about the variables/features collected during the study
+file:features_info.txt : explanation of the meaning of each variable/feature
+file: features.txt (561 records) : list of all features
+
+- Datasets: 2 files contain the datasets for training and testing data
+file: X_train.txt (7352 rows, 561 columns) / X_test.txt (2947 rows, 561 columns)
+
+- Acceleration signal from the smartphone accelerometer on each axis X, Y, Z (standard gravity units 'g')
+file: total_acc_x_train.txt / total_acc_y_train.txt/ total_acc_z_train.txt (7352 rows, 128 columns)
+file: total_acc_x_test.txt / total_acc_y_test.txt / total_acc_z_test.txt (2947 rows, 128 columns)
+
+- Acceleration signal obtained by subtracting the gravity from the total acceleration
+file: body_acc_x_train.txt / body_acc_y_train.txt / body_acc_z_train.txt (7352 rows, 128 columns)
+file: body_acc_x_test.txt /  body_acc_y_test.txt /  body_acc_z_test.txt (2947 rows, 128 columns)
+
+- Angular velocity vector measured by the gyroscope for each window sample (radians/second)
+file: body_gyro_x_train.txt / body_gyro_y_train.txt / body_gyro_z_train.txt (7352 rows, 128 columns)
+file: body_gyro_x_test.txt / body_gyro_y_test.txt / body_gyro_z_test.txt (2947 rows, 128 columns)
+
+4) Load the files into R in the following dataframes:
+- activlabels: activity labels definition
+- features: list of all features
+- testsubj: subjects for test dataset
+- testdata: test dataset
+- testactiv: activities for test dataset
+- trainsubj: subjects for train dataset
+- traindata: train dataset
+- trainactiv: activities for train dataset
+
+5) Merge the training and the test sets to create one data set
+- merge individual labels, activity labels (from y_train.txt) and dataset for train set with cbind
+- merge individual labels, activity labels (from y_test.txt) and dataset for test set with cbind
+- merge the train and test set into a new data set that has individual and activity label for each record (use rbind)
+- name 1st column = "individual", 2nd = "activityno", and every other column using the features.txt file
+
+6) Extract only the measurements on the mean and standard deviation for each measurement
+- use grep to select all the columns whose name contain "mean", "Mean" or "std"
+- add the first 2 columns "individual" and "activityno" and save a new dataframe meanstddata with all the selected columns
+
+7) Use descriptive activity names to name the activities in the data set
+- based on the values in the activity label column, add for each record the corresponding description based on activity_labels.txt
+- use inner_join function from dplyr package to link the column with activity codes and the column with activity descriptions
+- rearrange column orders so that the 3rd column of the dataset will have "walking", "sitting", etc.
+
+8) Appropriately label the data set with descriptive variable names
+- change variable names with a series of commands in order to make the names easier to understand
+
+9) From the data set in step 4, create a second, independent tidy data set with the average of each variable for each activity and each subject
+- group data by activity and subject and calculate the mean for each variable using the aggregate function
+- rename the first 2 column as "individual" and "activity" since aggregate created them with default values "V1", "V2"
+
+10) Save data in output file
+Save final tidy dataframe in file FinalData.txt which can be read back in R with:
+read.table("FinalData.txt", header = TRUE)
+
+11) List of variables/columns in final tidy data frame with description:
+
+[1] "individual"  : number indicating the subject of the test                                      
+ [2] "activityno"  :  number indicating the type of activity                                     
+ [3] "activity"  : description of the activity                                        
+ [4] "bodyacceleration(time)-mean-X" : mean value of body acceleration signal (in time domain) in the x direction                   
+ [5] "bodyacceleration(time)-mean-Y"  : mean value of body acceleration signal (in time domain) in the y direction                    
+ [6] "bodyacceleration(time)-mean-Z" : mean value of body acceleration signal (in time domain) in the z direction                     
+ [7] "bodyacceleration(time)-std-X"  : standard deviation value of body acceleration signal (in time domain) in the x direction                    
+ [8] "bodyacceleration(time)-std-Y" : standard deviation value of body acceleration signal (in time domain) in the y direction                     
+ [9] "bodyacceleration(time)-std-Z"  : standard deviation value of body acceleration signal (in time domain) in the z direction                    
+[10] "gravityacceleration(time)-mean-X": mean value of gravity acceleration signal (in time domain) in the x direction                  
+[11] "gravityacceleration(time)-mean-Y" : mean value of gravity acceleration signal (in time domain) in the y direction                 
+[12] "gravityacceleration(time)-mean-Z" : mean value of gravity acceleration signal (in time domain) in the z direction                 
+[13] "gravityacceleration(time)-std-X" : standard deviation value of gravity acceleration signal (in time domain) in the x direction                  
+[14] "gravityacceleration(time)-std-Y" : standard deviation value of gravity acceleration signal (in time domain) in the y direction                  
+[15] "gravityacceleration(time)-std-Z" : standard deviation value of gravity acceleration signal (in time domain) in the z direction                  
+[16] "bodyacceleration(time)Jerk-mean-X"  : mean value of jerk signal for body acceleration signal (in time domain) in the x direction                
+[17] "bodyacceleration(time)Jerk-mean-Y"  : mean value of jerk signal for body acceleration signal (in time domain) in the y direction                
+[18] "bodyacceleration(time)Jerk-mean-Z"  : mean value of jerk signal for body acceleration signal (in time domain) in the z direction                
+[19] "bodyacceleration(time)Jerk-std-X"  : standard deviation value of jerk signal for body acceleration signal (in time domain) in the x direction                 
+[20] "bodyacceleration(time)Jerk-std-Y" : standard deviation value of jerk signal for body acceleration signal (in time domain) in the y direction                  
+[21] "bodyacceleration(time)Jerk-std-Z" : standard deviation value of jerk signal for body acceleration signal (in time domain) in the z direction                  
+[22] "angularvelocity(time)-mean-X" : mean value of angular velocity signal (in time domain) in the x direction                     
+[23] "angularvelocity(time)-mean-Y"  : mean value of angular velocity signal (in time domain) in the y direction                    
+[24] "angularvelocity(time)-mean-Z"  : mean value of angular velocity signal (in time domain) in the z direction                    
+[25] "angularvelocity(time)-std-X" : standard deviation value of angular velocity signal (in time domain) in the x direction                      
+[26] "angularvelocity(time)-std-Y" : standard deviation value of angular velocity signal (in time domain) in the y direction                      
+[27] "angularvelocity(time)-std-Z" : standard deviation value of angular velocity signal (in time domain) in the z direction                      
+[28] "angularvelocity(time)Jerk-mean-X" : mean value of jerk signal for angular velocity signal (in time domain) in the x direction                 
+[29] "angularvelocity(time)Jerk-mean-Y"  : mean value of jerk signal for angular velocity signal (in time domain) in the y direction                
+[30] "angularvelocity(time)Jerk-mean-Z" : mean value of jerk signal for angular velocity signal (in time domain) in the z direction                 
+[31] "angularvelocity(time)Jerk-std-X" : standard deviation value of jerk signal for angular velocity signal (in time domain) in the x direction                  
+[32] "angularvelocity(time)Jerk-std-Y" : standard deviation value of jerk signal for angular velocity signal (in time domain) in the y direction                  
+[33] "angularvelocity(time)Jerk-std-Z": standard deviation value of jerk signal for angular velocity signal (in time domain) in the z direction                   
+[34] "bodyacceleration(time)Mag-mean" : mean value of magnitude for body acceleration signal (in time domain)                    
+[35] "bodyacceleration(time)Mag-std"  : standard deviation value of magnitude for body acceleration signal (in time domain)                    
+[36] "gravityacceleration(time)Mag-mean": mean value of magnitude for gravity acceleration signal (in time domain)                  
+[37] "gravityacceleration(time)Mag-std" : standard deviation value of magnitude for gravity acceleration signal (in time domain)                  
+[38] "bodyacceleration(time)JerkMag-mean" : mean value of magnitude of jerk signal for body acceleration signal (in time domain)               
+[39] "bodyacceleration(time)JerkMag-std": standard deviation value of magnitude of jerk signal for body acceleration signal (in time domain)                    
+[40] "angularvelocity(time)Mag-mean" : mean value of magnitude for angular velocity signal (in time domain)                     
+[41] "angularvelocity(time)Mag-std" : standard deviation value of magnitude for angular velocity signal (in time domain)                      
+[42] "angularvelocity(time)JerkMag-mean"  : mean value of magnitude of jerk signal for angular velocity signal (in time domain)                  
+[43] "angularvelocity(time)JerkMag-std": standard deviation value of magnitude of jerk signal for angular velocity signal (in time domain)                      
+[44] "bodyacceleration(freq)-mean-X" : mean value of body acceleration signal (in frequency domain) in the x direction                    
+[45] "bodyacceleration(freq)-mean-Y"  : mean value of body acceleration signal (in frequency domain) in the y direction                   
+[46] "bodyacceleration(freq)-mean-Z"  : mean value of body acceleration signal (in frequency domain) in the z direction                   
+[47] "bodyacceleration(freq)-std-X" : standard deviation value of body acceleration signal (in frequency domain) in the x direction                      
+[48] "bodyacceleration(freq)-std-Y" : standard deviation value of body acceleration signal (in frequency domain) in the y direction                     
+[49] "bodyacceleration(freq)-std-Z"  : standard deviation value of body acceleration signal (in frequency domain) in the z direction                    
+[50] "bodyacceleration(freq)-meanFreq-X"  : Weighted average of the frequency components to obtain a mean frequency for body acceleration signal (in frequency domain) in the x direction              
+[51] "bodyacceleration(freq)-meanFreq-Y"  : Weighted average of the frequency components to obtain a mean frequency for body acceleration signal (in frequency domain) in the y direction                    
+[52] "bodyacceleration(freq)-meanFreq-Z"   : Weighted average of the frequency components to obtain a mean frequency for body acceleration signal (in frequency domain) in the z direction                   
+[53] "bodyacceleration(freq)Jerk-mean-X" : mean value of jerk signal for body acceleration signal (in frequency domain) in the x direction                
+[54] "bodyacceleration(freq)Jerk-mean-Y" : mean value of jerk signal for body acceleration signal (in frequency domain) in the y direction                
+[55] "bodyacceleration(freq)Jerk-mean-Z" : mean value of jerk signal for body acceleration signal (in frequency domain) in the z direction                
+[56] "bodyacceleration(freq)Jerk-std-X"  : standard deviation value of jerk signal for body acceleration signal (in frequency domain) in the x direction                
+[57] "bodyacceleration(freq)Jerk-std-Y"  : standard deviation value of jerk signal for body acceleration signal (in frequency domain) in the y direction                
+[58] "bodyacceleration(freq)Jerk-std-Z"  : standard deviation value of jerk signal for body acceleration signal (in frequency domain) in the z direction                
+[59] "bodyacceleration(freq)Jerk-meanFreq-X"  :  Weighted average of the frequency components to obtain a mean frequency for value of jerk signal for body acceleration signal (in frequency domain) in the x direction            
+[60] "bodyacceleration(freq)Jerk-meanFreq-Y"  : Weighted average of the frequency components to obtain a mean frequency for value of jerk signal for body acceleration signal (in frequency domain) in the y direction             
+[61] "bodyacceleration(freq)Jerk-meanFreq-Z"  : Weighted average of the frequency components to obtain a mean frequency for value of jerk signal for body acceleration signal (in frequency domain) in the z direction             
+[62] "angularvelocity(freq)-mean-X"  : mean value of angular velocity signal (in frequency domain) in the x direction                    
+[63] "angularvelocity(freq)-mean-Y"  : mean value of angular velocity signal (in frequency domain) in the y direction                     
+[64] "angularvelocity(freq)-mean-Z"  : mean value of angular velocity signal (in frequency domain) in the z direction                     
+[65] "angularvelocity(freq)-std-X"   : standard deviation value of angular velocity signal (in frequency domain) in the x direction                     
+[66] "angularvelocity(freq)-std-Y" : standard deviation value of angular velocity signal (in frequency domain) in the y direction                      
+[67] "angularvelocity(freq)-std-Z"  : standard deviation value of angular velocity signal (in frequency domain) in the z direction                     
+[68] "angularvelocity(freq)-meanFreq-X" : Weighted average of the frequency components to obtain a mean frequency for angular velocity signal (in frequency domain) in the x direction                 
+[69] "angularvelocity(freq)-meanFreq-Y" : Weighted average of the frequency components to obtain a mean frequency for angular velocity signal (in frequency domain) in the y direction                    
+[70] "angularvelocity(freq)-meanFreq-Z": Weighted average of the frequency components to obtain a mean frequency for angular velocity signal (in frequency domain) in the z direction                     
+[71] "bodyacceleration(freq)Mag-mean": mean value of magnitude for body acceleration signal (in frequency domain)                     
+[72] "bodyacceleration(freq)Mag-std" : standard deviation value of magnitude for body acceleration signal (in frequency domain)                     
+[73] "bodyacceleration(freq)Mag-meanFreq"  : Weighted average of the frequency components to obtain a mean frequency for magnitude of  body acceleration signal (in frequency domain)              
+[74] "bodyacceleration(freq)JerkMag-mean"  : mean value of magnitude of jerk signal for body acceleration signal (in frequency domain)                    
+[75] "bodyacceleration(freq)JerkMag-std"  : standard deviation value of magnitude of jerk signal for body acceleration signal (in frequency domain)                   
+[76] "bodyacceleration(freq)JerkMag-meanFreq" : Weighted average of the frequency components to obtain a mean frequency for magnitude of jerk signal of body acceleration signal (in frequency domain)            
+[77] "angularvelocity(freq)Mag-mean" : mean value of magnitude for angular velocity signal (in frequency domain)                     
+[78] "angularvelocity(freq)Mag-std" : standard deviation value of magnitude for angular velocity signal (in frequency domain)                     
+[79] "angularvelocity(freq)Mag-meanFreq" : Weighted average of the frequency components to obtain a mean frequency for magnitude of angular velocity signal (in frequency domain)                 
+[80] "angularvelocity(freq)JerkMag-mean" : mean value of magnitude of jerk signal for angular velocity signal (in frequency domain)                
+[81] "angularvelocity(freq)JerkMag-std" : standard deviation value of magnitude of jerk signal for angular velocity signal (in frequency domain)                  
+[82] "angularvelocity(freq)JerkMag-meanFreq"   : Weighted average of the frequency components to obtain a mean frequency for magnitude of jerk signal of angular velocity signal (in frequency domain)            
+[83] "angle(bodyacceleration(time)Mean,gravity)" : angle between mean value of body acceleration and gravity acceleration signal (in time domain)        
+[84] "angle(bodyacceleration(time)JerkMean),gravityMean)": angle between mean value of jerk signal for body acceleration and gravity acceleration signal (in time domain)
+[85] "angle(angularvelocity(time)Mean,gravityMean)" : angle between mean value of angular velocity and gravity acceleration signal (in time domain)     
+[86] "angle(angularvelocity(time)JerkMean,gravityMean)" :  angle between mean value of jerk signal for angular velocity and gravity acceleration signal (in time domain)
+[87] "angle(X,gravityMean)" : angle between axis x and mean value of gravity acceleration signal                            
+[88] "angle(Y,gravityMean)"   : angle between axis y and mean value of gravity acceleration signal                           
+[89] "angle(Z,gravityMean)": angle between axis z and mean value of gravity acceleration signal
